@@ -68,6 +68,7 @@ class MettaAgent(Agent):
                 code = f.read()
                 response = metta.run(code)
                 mettaResponse = self._postproc(response)
+
                 print("metta response", mettaResponse)
                 ch = mettaResponse.content[0].get_children()
                 
@@ -86,11 +87,14 @@ class MettaAgent(Agent):
                 agent = ChatGPTAgent()
                 functions = []
                 params = {}
-                message = f"Below is a user's question and the answer for the user's question. By getting a context from the user's question, make the response more descriptive. \n\
+                message = f"Below is a user's question and the answer for the user's question. By getting a context from the user's question, make the response more descriptive. You can get an accurate information from the dataset that's provided below when generating more descriptions. \n\
                 \n User's question: {msgs_atom} \n\
                 \n dataset: {response2} \n\
                 \n response for the user's question: {mettaResponse} \n\
+
                 \n Return with {mes}.\n"
+
+
                 messages = [{'role': 'user', 'content': str(message)}]
                 naturalLanguageResponse = agent(messages, functions, **params)
                 naturalLanguageResponse = Response([ValueAtom(naturalLanguageResponse.content)])
