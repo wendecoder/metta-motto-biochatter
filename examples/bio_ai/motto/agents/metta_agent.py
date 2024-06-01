@@ -1,7 +1,9 @@
+from .db.ontology import get_ontology_term
 from .agent import Agent, Response
 from hyperon import MeTTa, Environment, ExpressionAtom, OperationAtom, E, S, interpret, ValueAtom
 from .gpt_agent import ChatGPTAgent
 import ast
+
 
 class MettaAgent(Agent):
 
@@ -66,26 +68,16 @@ class MettaAgent(Agent):
                 code = f.read()
                 response = metta.run(code)
                 mettaResponse = self._postproc(response)
+                print("metta response", mettaResponse)
+                ch = mettaResponse.content[0].get_children()
+                
 
-                for r in mettaResponse.content:
-                    if isinstance(r, ExpressionAtom):
-                        ch = r.get_children()
-
-                response2 = []
+                response2 = ""
                 mes = ""
-                print("ch",ch[0])
-                if str(ch[0]) == "transcript":
-                    
-                    for rs in mettaResponse.content:
-                       
-                        print("pred",rs)
-                        mettaQuery = f"!(match &space \n\
-                            (, \n\
-                                (transcript_name {rs} $val ) \n\
-                            ) \n\
-                            (transcript_name {rs} $val ) \n)"
-                        mes = "transcript_name and ensemble ID" 
-                        response2.append(metta.run(mettaQuery))
+                print("ch",ch)
+                if str(ch[0]) == "ontology_term":
+                    response2 = get_ontology_term(str(ch[1]))        
+                    mes = "ontology term, name and description"
                 
                 print("responese2",response2)
                 print("mes",mes)
