@@ -1,3 +1,4 @@
+from .db.genecode import Genecode
 from .db.ontology import get_ontology_term
 from .agent import Agent, Response
 from hyperon import MeTTa, Environment, ExpressionAtom, OperationAtom, E, S, interpret, ValueAtom
@@ -67,6 +68,7 @@ class MettaAgent(Agent):
             with open(self._path, mode='r') as f:
                 code = f.read()
                 response = metta.run(code)
+                print("response: ",response)
                 mettaResponse = self._postproc(response)
 
                 print("metta response", mettaResponse)
@@ -75,10 +77,17 @@ class MettaAgent(Agent):
 
                 response2 = ""
                 mes = ""
+                term0 = str(ch[0])
                 print("ch",ch)
                 if str(ch[0]) == "ontology_term":
                     response2 = get_ontology_term(str(ch[1]))        
                     mes = "ontology term, name and description"
+                elif term0 == 'transcript' or term0 == 'gene':
+                    response2 = Genecode(ch)
+                    if term0 == 'transcript':
+                        mes = "Transcript id and transcript name"
+                    elif term0 == 'gene':
+                        mes = "Gene term and gene name"
                 
                 print("responese2",response2)
                 print("mes",mes)
@@ -91,7 +100,6 @@ class MettaAgent(Agent):
                 \n User's question: {msgs_atom} \n\
                 \n dataset: {response2} \n\
                 \n response for the user's question: {mettaResponse} \n\
-
                 \n Return with {mes}.\n"
 
 
