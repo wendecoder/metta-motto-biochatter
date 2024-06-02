@@ -15,7 +15,6 @@ collection = db[dbs_name]
 def Genecode(query):
     
     if query:
-        # print("genecode is printed")
   
         datas = collection.find_one({str(query[0]):str(query[1])},{'_id': 0})
         # print("dsatass: ",datas)
