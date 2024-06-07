@@ -1,5 +1,5 @@
 from .db.genecode import Genecode
-from .db.ontology import get_ontology_term
+from .db.ontology import get_ontology_term,get_ontology_terms
 from .agent import Agent, Response
 from hyperon import MeTTa, Environment, ExpressionAtom, OperationAtom, E, S, interpret, ValueAtom
 from .gpt_agent import ChatGPTAgent
@@ -68,39 +68,45 @@ class MettaAgent(Agent):
             with open(self._path, mode='r') as f:
                 code = f.read()
                 response = metta.run(code)
-                print("response: ",response)
+                # print("response: ",response)
                 mettaResponse = self._postproc(response)
 
-                print("metta response", mettaResponse)
+                # print("metta response", mettaResponse)
                 ch = mettaResponse.content[0].get_children()
                 
 
-                response2 = ""
-                mes = ""
-                term0 = str(ch[0])
-                print("ch",ch)
-                if str(ch[0]) == "ontology_term":
-                    response2 = get_ontology_term(str(ch[1]))        
-                    mes = "ontology term, name and description"
-                elif term0 == 'transcript' or term0 == 'gene':
-                    response2 = Genecode(ch)
-                    if term0 == 'transcript':
-                        mes = "Transcript id and transcript name"
-                    elif term0 == 'gene':
-                        mes = "Gene term and gene name"
+                # response2 = ""
+                # mes = ""
+                # term0 = str(ch[0])
+                # print("ch",ch)
+                # if str(ch[0]) == "ontology_term":
+                #     response2 = get_ontology_term(str(ch[1]))        
+                #     mes = "ontology term, name and description"
+                # elif term0 == 'transcript' or term0 == 'gene':
+                #     response2 = Genecode(ch)
+                #     if term0 == 'transcript':
+                #         mes = "Transcript id and transcript name"
+                #     elif term0 == 'gene':
+                #         mes = "Gene term and gene name"
                 
-                print("responese2",response2)
-                print("mes",mes)
+                # print("responese2",response2)
+                # print("mes",mes)
+                # Print the raw response to verify its content
+                print("Raw response:", response)
 
+                ontology_terms = [str(term.get_children()[1]) for term in mettaResponse.content if term.get_children()[0] == "ontology_term"]
+                print("ontology terms",ontology_terms)
+                ontology_data = get_ontology_terms(ontology_terms)
+                print("ontology data",ontology_data)
                 
                 agent = ChatGPTAgent()
                 functions = []
                 params = {}
                 message = f"Below is a user's question and the answer for the user's question. By getting a context from the user's question, make the response more descriptive. You can get an accurate information from the dataset that's provided below when generating more descriptions. \n\
                 \n User's question: {msgs_atom} \n\
-                \n dataset: {response2} \n\
+                \n dataset: {ontology_data} \n\
                 \n response for the user's question: {mettaResponse} \n\
-                \n Return with {mes}.\n"
+                \n Return with description.\n"
 
 
                 messages = [{'role': 'user', 'content': str(message)}]
