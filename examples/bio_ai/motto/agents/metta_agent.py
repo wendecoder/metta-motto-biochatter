@@ -94,7 +94,7 @@ class MettaAgent(Agent):
                 # Print the raw response to verify its content
                 print("Raw response:", response)
 
-                ontology_terms = [str(term.get_children()[1]) for term in mettaResponse.content if term.get_children()[0] == "ontology_term"]
+                ontology_terms = [str(term.get_children()[1]) for term in mettaResponse.content if str(term.get_children()[0]) == "ontology_term"]
                 print("ontology terms",ontology_terms)
                 ontology_data = get_ontology_terms(ontology_terms)
                 print("ontology data",ontology_data)
