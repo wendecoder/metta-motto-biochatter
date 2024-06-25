@@ -19,24 +19,39 @@ except Exception as e:
     print(f"Error: {e}")
 
 db = client[dbs_name]
-collection = db["pathway"]
+collection = db["pathways"]
 
 # Initialize an empty list to store pathway data
 pathway_data = []
 
-# Read the file and extract the pathway id and name
-with open('pathway_nodes.metta', 'r') as file:
-    lines = file.readlines()
-    for i in range(0, len(lines), 2):
-        pathway_id = lines[i].split()[1].strip(')')
-        name = lines[i + 1].split()[2].strip(')').replace('_', ' ')
-        pathway_data.append({
-            'pathway': pathway_id,
-            'name': name,
-            'description': ''
-        })
+# # Read the file and extract the pathway id and name
+# with open('pathway_nodes.metta', 'r') as file:
+#     lines = file.readlines()
+#     for i in range(0, len(lines), 2):
+#         pathway_id = lines[i].split()[1].strip(')')
+#         name = lines[i + 1].split()[2].strip(')').replace('_', ' ')
+#         pathway_data.append({
+#             'pathway': pathway_id,
+#             'name': name,
+#             'description': ''
+#         })
 
-# Insert the data into MongoDB
-collection.insert_many(pathway_data)
+# # Insert the data into MongoDB
+# collection.insert_many(pathway_data)
 
-print("Data inserted successfully into MongoDB")
+# print("Data inserted successfully into MongoDB")
+
+def fetch_pathway_data(pathway_data):
+    print("pathway_data", pathway_data)
+    results = {}
+    for pathway in pathway_data:
+        ch = pathway.get_children()
+        # print("second children", ch[1])
+        pathway_data = collection.find_one({'pathway': str(ch[1])})
+        print("pathway_data", pathway_data)
+        results[str(ch[1])] = pathway_data
+    if results:
+        return results
+    else:
+        return "No pathway data found!"
+

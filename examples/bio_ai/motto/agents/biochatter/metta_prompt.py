@@ -415,15 +415,34 @@ class MettaPrompt:
             (eqtl $seq (gene $ens)) \n\
         ) \n\
         $seq \n\
+        \n ;What variants have eqtl association with gene ARL6IP1 (use the gene HGNC symbol instead of ensembl id) \n\
+        (, \n\
+            (gene_name (gene $ens) ARL6IP1) \n\
+            (eqtl $seq (gene $ens)) \n\
+        ) \n\
+        $seq \n\
         \n ;What variants have eqtl association with gene <some_gene_ensembl_id> and return the properties of the association \n\
         (, \n\
             (eqtl $seq (gene <some_gene_ensembl_id>)) \n\
             ($prop (eqtl $seq (gene <some_gene_ensembl_id>)) $val) \n\
         ) \n\
             ($prop (eqtl $seq (gene <some_gene_ensembl_id>)) $val) \n\
+        \n ;What variants have eqtl association with gene ENSG00000161980 and return the properties of the association \n\
+        (, \n\
+            (eqtl $seq (gene ENSG00000161980)) \n\
+            ($prop (eqtl $seq (gene ENSG00000161980)) $val) \n\
+        ) \n\
+            ($prop (eqtl $seq (gene ENSG00000161980)) $val) \n\
         \n ;What variants have eqtl association with gene <some_gene_HGNC_symbol> (use the gene HGNC symbol instead of ensembl id) and return the properties of the association \n\
         (, \n\
             (gene_name (gene $ens) <some_gene_HGNC_symbol>) \n\
+            (eqtl $seq $ens) \n\
+            ($prop (eqtl $seq (gene $ens)) $val) \n\
+        ) \n\
+        ($prop (eqtl $seq (gene $ens)) $val) \n\
+        \n ;What variants have eqtl association with gene IRX3 (use the gene HGNC symbol instead of ensembl id) and return the properties of the association \n\
+        (, \n\
+            (gene_name (gene $ens) IRX3) \n\
             (eqtl $seq $ens) \n\
             ($prop (eqtl $seq (gene $ens)) $val) \n\
         ) \n\
@@ -433,28 +452,55 @@ class MettaPrompt:
             ($prop (eqtl  (sequence_variant <some_sequence_variant_id>) (gene <some_gene_ensembl_id>)) $val) \n\
         ) \n\
         ($prop (eqtl (sequence_variant <some_sequence_variant_id>) (gene <some_gene_ensembl_id>)) $val) \n\
+        \n  ;Get the properties of the eqtl association involving the rs224167 variant and the gene ENSG00000234769 \n\
+        (, \n\
+            ($prop (eqtl  (sequence_variant rs224167) (gene ENSG00000234769)) $val) \n\
+        ) \n\
+        ($prop (eqtl (sequence_variant rs224167) (gene ENSG00000234769)) $val) \n\
         \n ;Get the slope of the eqtl association involving the <some_sequence_variant_id> variant and the gene <some_gene_ensembl_id> \n\
         (, \n\
             (slope (eqtl  (sequence_variant <some_sequence_variant_id>) (gene <some_gene_ensembl_id>)) $val) \n\
         ) \n\
         (slope (eqtl (sequence_variant <some_sequence_variant_id>) (gene <some_gene_ensembl_id>)) $val) \n\
+        \n ;Get the slope of the eqtl association involving the rs224167 variant and the gene ENSG00000234769 \n\
+        (, \n\
+            (slope (eqtl  (sequence_variant rs224167) (gene ENSG00000234769)) $val) \n\
+        ) \n\
+        (slope (eqtl (sequence_variant rs224167) (gene ENSG00000234769)) $val) \n\
         \n ;Get the p-value of the eqtl association involving the <some_sequence_variant_id> variant and the gene <some_gene_ensembl_id> \n\
             (, \n\
                 (p_value (eqtl (sequence_variant <some_sequence_variant_id>) (gene <some_gene_ensembl_id>)) $val) \n\
             ) \n\
             (p_value (eqtl (sequence_variant <some_sequence_variant_id>) (gene <some_gene_ensembl_id>)) $val) \n\
         ) \n\
+        \n ;Get the p-value of the eqtl association involving the rs2239739 variant and the gene ENSG00000167930 \n\
+            (, \n\
+                (p_value (eqtl (sequence_variant rs2239739) (gene ENSG00000167930) $val) \n\
+            ) \n\
+            (p_value (eqtl (sequence_variant rs2239739) (gene ENSG00000167930)) $val) \n\
+        ) \n\
         \n ;Get the biological context of the eqtl association involving the <some_sequence_variant_id> variant and the gene <some_gene_ensembl_id> \n\
         (, \n\
             (biological_context (eqtl (sequence_variant <some_sequence_variant_id>) (gene <some_gene_ensembl_id>)) $val) \n\
         ) \n\
         (biological_context (eqtl (sequence_variant <some_sequence_variant_id>) (gene <some_gene_ensembl_id>)) $val) \n\
+        \n ;Get the biological context of the eqtl association involving the rs2239739 variant and the gene ENSG00000167930 \n\
+        (, \n\
+            (biological_context (eqtl (sequence_variant rs2239739) (gene ENSG00000167930)) $val) \n\
+        ) \n\
+        (biological_context (eqtl (sequence_variant rs2239739) (gene ENSG00000167930)) $val) \n\
         \n ;What genes have eqtl association with  variant <some_sequence_variant_id>, return the properties of the association \n\
         (, \n\
             (eqtl (sequence_variant <some_sequence_variant_id>)  $ens) \n\
             ($prop (eqtl (sequence_variant <some_sequence_variant_id>) $ens) $val) \n\
         ) \n\
-        ($prop (eqtl (sequence_variant <some_sequence_variant_id>) $ens) $val) \n"
+        ($prop (eqtl (sequence_variant <some_sequence_variant_id>) $ens) $val) \n\
+        \n ;What genes have eqtl association with  variant rs2239739, return the properties of the association \n\
+        (, \n\
+            (eqtl (sequence_variant rs2239739)  $ens) \n\
+            ($prop (eqtl (sequence_variant rs2239739) $ens) $val) \n\
+        ) \n\
+        ($prop (eqtl (sequence_variant rs2239739) $ens) $val) \n"
         variant_edge_query_samples += "*** \n"
         return variant_edge_query_samples
 
@@ -528,7 +574,8 @@ class MettaPrompt:
             metta_edge_query_samples = self.generate_sequence_variant_edge_query_samples()
         else:
             metta_edge_query_samples = self.generate_metta_edge_query_samples()
-        
+        print(metta_node_query_samples)
+        print(metta_edge_query_samples)
         prompt = (
             f"I have a dataset for storing biology data using a lisp style syntax."
             f"The dataset is classified into 'nodes' and 'edges' as follows:"

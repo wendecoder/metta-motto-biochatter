@@ -30,22 +30,22 @@ def get_ontology_term(ontology_term):
     else:
         return {"ontology_term": ontology_term, "term_name": None, "description": "Not found"}
 
-def get_ontology_terms(ontology_terms):
+def fetch_ontology_terms(ontology_terms):
     results = {}
     for term in ontology_terms:
         results[term] = get_ontology_term(term)
     return results
 
 # Example usage
-metta_response = [
-    "GO:0030154", "GO:0048468", "GO:0006366", "GO:0000785", 
-    "GO:0000978", "GO:0006357", "GO:0042789", "GO:0002088", 
-    "GO:0003700", "GO:0002930", "GO:0005634", "GO:0061072", 
-    "GO:0051726", "GO:2001111", "GO:0050673", "GO:0061073", 
-    "GO:0061303", "GO:0001654", "GO:0003677", "GO:0043066", 
-    "GO:0005667", "GO:0009653", "GO:0000981", "GO:0043565", 
-    "GO:1902747"
-]
+# metta_response = [
+#     "GO:0030154", "GO:0048468", "GO:0006366", "GO:0000785", 
+#     "GO:0000978", "GO:0006357", "GO:0042789", "GO:0002088", 
+#     "GO:0003700", "GO:0002930", "GO:0005634", "GO:0061072", 
+#     "GO:0051726", "GO:2001111", "GO:0050673", "GO:0061073", 
+#     "GO:0061303", "GO:0001654", "GO:0003677", "GO:0043066", 
+#     "GO:0005667", "GO:0009653", "GO:0000981", "GO:0043565", 
+#     "GO:1902747"
+# ]
 
-ontology_data = get_ontology_terms(metta_response)
+# ontology_data = get_ontology_terms(metta_response)
 # print(ontology_data)

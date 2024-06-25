@@ -80,16 +80,14 @@ collection2 = db["transcripts"]
 #     collection2.insert_many(transcript_info)
 #     print("Transcript data inserted successfully.")
 
-def Genecode(query):
-    
-    if query:
-  
-        datas = collection.find_one({str(query[0]):str(query[1])},{'_id': 0})
-        # print("dsatass: ",datas)
-        return datas
-
-    else:
-        return (f"The gene with {query} is none")
+def fetch_genecode_data(genecode_data):
+    results = {}
+    for genecode in genecode_data:
+        ch = genecode.get_children()
+        if str(ch[0]) == "transcript":
+            results[str(ch[1])] = collection2.find_one({'transcript': str(ch[1])})
+        else:
+            results[str]
 
 query = ['transcript', 'ENST00000533722']
-Genecode(query)
+# Genecode(query)
