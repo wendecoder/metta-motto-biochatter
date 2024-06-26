@@ -1,0 +1,25 @@
+ !(bind! &space (new-space))
+ !(load-ascii &space data_subset/gencode/edges.metta)
+ !(load-ascii &space data_subset//gencode/nodes.metta)
+ !(load-ascii &space data_subset/gaf/edges.metta)
+ !(load-ascii &space data_subset/gtex/eqtl/edges.metta)
+ !(load-ascii &space data_subset/ontology/edges.metta)
+ !(load-ascii &space data_subset/ontology/nodes.metta)
+ !(load-ascii &space data_subset/reactome/edges.metta)
+ !(load-ascii &space data_subset/reactome/nodes.metta)
+ !(load-ascii &space data_subset/uniprot/edges.metta)
+ !(load-ascii &space data_subset/uniprot/nodes.metta)
+
+ (= (add-explanation-to-message)
+    (let $phrase (match &self (= (messages)(user $message)) $message)
+      (if ( == (and (== (contains-str $phrase "gene") True) (== (contains-str $phrase "ensg") False)) True)
+         (user (concat-str $phrase " (use the gene HGNC symbol instead of ensembl id)"))
+         (user $phrase)
+      )
+    )
+ )
+
+!(Response
+   (_eval
+   (biochatter (add-explanation-to-message))
+   ))
