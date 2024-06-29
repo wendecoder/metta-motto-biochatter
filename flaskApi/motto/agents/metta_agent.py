@@ -5,6 +5,7 @@ from .db.genecode import fetch_genecode_data
 from .agent import Agent, Response
 from hyperon import MeTTa, Environment, ExpressionAtom, OperationAtom, E, S, interpret, ValueAtom
 from .gpt_agent import ChatGPTAgent
+from .llama_agent import LlamaAgent
 import ast
 
 
@@ -86,28 +87,21 @@ class MettaAgent(Agent):
                 elif str(ch[0]) == "pathway":
                     response2 = fetch_pathway_data(mettaResponse.content)
                 elif str(ch[0]) == 'transcript':
-                    response2 = fetch_genecode_data(mettaResponse.content)
+                    response2 = fetch_genecode_data(mettaResponse.content)              
                 
-                # print("responese2",response2)
-                # print("mes",mes)
-                # Print the raw response to verify its content
-                print("Raw response:", response)
-
-                
-                
-                agent = ChatGPTAgent()
+                agent = LlamaAgent()
                 functions = []
                 params = {}
                 message = f"Below is a user's question and the answer for the user's question. By getting a context from the user's question, make the response more descriptive. You can get an accurate information from the dataset that's provided below when generating more descriptions. \n\
                 \n User's question: {msgs_atom} \n\
                 \n dataset: {response2} \n\
                 \n response for the user's question: {mettaResponse} \n\
-                \n Return with description.\n"
+                \n Return only the description, don't include sentences like here is the description and also others.\n"
 
 
-                messages = [{'role': 'user', 'content': str(message)}]
-                naturalLanguageResponse = agent(messages, functions, **params)
-                naturalLanguageResponse = Response([ValueAtom(naturalLanguageResponse.content)])
+                # messages = [{'role': 'user', 'content': str(message)}]
+                naturalLanguageResponse = agent(message, **params)
+                naturalLanguageResponse = Response([ValueAtom(naturalLanguageResponse.text)])
         if self._code is not None:
             response = metta.run(self._code) if isinstance(self._code, str) else \
                        [interpret(metta.space(), self._code)]

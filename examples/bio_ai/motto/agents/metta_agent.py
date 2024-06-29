@@ -5,6 +5,7 @@ from .db.genecode import fetch_genecode_data
 from .agent import Agent, Response
 from hyperon import MeTTa, Environment, ExpressionAtom, OperationAtom, E, S, interpret, ValueAtom
 from .gpt_agent import ChatGPTAgent
+from .llama_agent import LlamaAgent
 import ast
 
 
@@ -95,7 +96,7 @@ class MettaAgent(Agent):
 
                 
                 
-                agent = ChatGPTAgent()
+                agent = LlamaAgent()
                 functions = []
                 params = {}
                 message = f"Below is a user's question and the answer for the user's question. By getting a context from the user's question, make the response more descriptive. You can get an accurate information from the dataset that's provided below when generating more descriptions. \n\
@@ -105,8 +106,8 @@ class MettaAgent(Agent):
                 \n Return with description.\n"
 
 
-                messages = [{'role': 'user', 'content': str(message)}]
-                naturalLanguageResponse = agent(messages, functions, **params)
+                # messages = [{'role': 'user', 'content': str(message)}]
+                naturalLanguageResponse = agent(message, **params)
                 naturalLanguageResponse = Response([ValueAtom(naturalLanguageResponse.content)])
         if self._code is not None:
             response = metta.run(self._code) if isinstance(self._code, str) else \
