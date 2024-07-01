@@ -3,7 +3,7 @@ import yaml
 import json
 import os
 from ._misc import ensure_iterable, sentencecase_to_snakecase, sentencecase_to_pascalcase
-from .llm_connect import Conversation, GptConversation
+from .llm_connect import Conversation, GptConversation, LlamaConversation
 
 from .metta_prompt import MettaPrompt
 

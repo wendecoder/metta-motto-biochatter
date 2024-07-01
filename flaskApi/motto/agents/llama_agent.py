@@ -2,7 +2,7 @@ from llama_index.llms.ollama import Ollama
 
 class LlamaAgent:
 
-    def __init__(self, model="llama3", request_timeout=120.0, base_url="http://100.67.47.42:11434"):
+    def __init__(self, model="mistral", request_timeout=120.0, base_url="http://100.67.47.42:11434"):
         self._model = model
         self._request_timeout = request_timeout
         self._base_url = base_url

@@ -18,6 +18,8 @@ import openai
 from langchain.chat_models import ChatOpenAI, AzureChatOpenAI
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from langchain.llms import HuggingFaceHub
+from llama_index.llms.ollama import Ollama
+
 
 import nltk
 import json
@@ -330,6 +332,147 @@ class Conversation(ABC):
         Resets the conversation to the initial state.
         """
 
+        self.history = []
+        self.messages = []
+        self.ca_messages = []
+        self.current_statements = []
+
+class LlamaAgent:
+
+    def __init__(self, model="llama3", request_timeout=120.0, base_url="http://100.67.47.42:11434"):
+        self._model = model
+        self._request_timeout = request_timeout
+        self._base_url = base_url
+        self._client = Ollama(model=self._model, request_timeout=self._request_timeout, base_url=self._base_url)
+
+    def __call__(self, prompt):
+        response = self._client.complete(prompt)
+        return response
+
+
+class LlamaConversation(Conversation):
+    def __init__(
+        self,
+        model_name: str,
+        prompts: dict,
+        correct: bool = True,
+        split_correction: bool = False,
+    ):
+        """
+        Connect to Llama API and set up a conversation with the user.
+        Also initialise a second conversational agent to provide corrections to
+        the model output, if necessary.
+
+        Args:
+            model_name (str): The name of the model to use.
+            prompts (dict): A dictionary of prompts to use for the conversation.
+            correct (bool): Whether to use correction.
+            split_correction (bool): Whether to correct the model output by
+                splitting the output into sentences and correcting each
+                sentence individually.
+        """
+        super().__init__(
+            model_name=model_name,
+            prompts=prompts,
+            correct=correct,
+            split_correction=split_correction,
+        )
+        self.agent = LlamaAgent()
+
+    def set_api_key(self, api_key: str, user: Optional[str] = None):
+        """
+        Set the API key for the Llama API. Set the user for usage statistics.
+
+        Args:
+            api_key (str): The API key for the Llama API.
+            user (Optional[str]): The user for usage statistics.
+        """
+        # Llama does not use an API key for the local setup, but we keep the function for compatibility
+        self.user = user
+
+    def _primary_query(self):
+        """
+        Query the Llama API with the user's message and return the response.
+
+        Returns:
+            tuple: A tuple containing the response from the Llama API and the
+                token usage (if available).
+        """
+        # Create a prompt using the messages attribute
+        prompt = "\n".join([message.content for message in self.messages if isinstance(message, (SystemMessage, HumanMessage))])
+        response = self.agent(prompt)
+        msg = response.text
+        token_usage = None # Adjust according to actual response structure
+        self.append_ai_message(msg)
+
+        return msg, token_usage
+
+    def _correct_response(self, msg: str):
+        """
+        Correct the response from the Llama API by sending it to a secondary
+        language model. Optionally split the response into single sentences and
+        correct each sentence individually.
+
+        Args:
+            msg (str): The response from the Llama API.
+
+        Returns:
+            str: The corrected response (or OK if no correction necessary).
+        """
+        # Assuming we use the same model for correction or another instance of LlamaAgent for corrections
+        ca_messages = self.ca_messages.copy()
+        ca_messages.append(HumanMessage(content=msg))
+        ca_messages.append(SystemMessage(content="If there is nothing to correct, please respond with just 'OK', and nothing else!"))
+
+        prompt = "\n".join([message.content for message in ca_messages])
+        response = self.agent(prompt)
+        correction = response['completion'] if 'completion' in response else response
+        token_usage = response.get('token_usage', None)  # Adjust according to actual response structure
+
+        return correction
+
+    def get_last_injected_context(self) -> List[dict]:
+        """
+        Get a formatted list of the last context injected into the
+        conversation. Contains one dictionary for each RAG mode.
+
+        Returns:
+            List[dict]: A list of dictionaries containing the mode and context
+            for each RAG agent.
+        """
+        last_context = []
+        for agent in self.rag_agents:
+            last_context.append({"mode": agent.mode, "context": agent.last_response})
+        return last_context
+
+    def get_msg_json(self):
+        """
+        Return a JSON representation (of a list of dicts) of the messages in
+        the conversation. The keys of the dicts are the roles, the values are
+        the messages.
+
+        Returns:
+            str: A JSON representation of the messages in the conversation.
+        """
+        d = []
+        for msg in self.messages:
+            if isinstance(msg, SystemMessage):
+                role = "system"
+            elif isinstance(msg, HumanMessage):
+                role = "user"
+            elif isinstance(msg, AIMessage):
+                role = "ai"
+            else:
+                raise ValueError(f"Unknown message type: {type(msg)}")
+
+            d.append({role: msg.content})
+
+        return json.dumps(d)
+
+    def reset(self):
+        """
+        Resets the conversation to the initial state.
+        """
         self.history = []
         self.messages = []
         self.ca_messages = []
