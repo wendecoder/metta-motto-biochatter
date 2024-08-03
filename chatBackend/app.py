@@ -32,7 +32,7 @@ def answer_question():
     payload = {'requests': json_request}
     
     # Make the POST request to the /query endpoint
-    annotation_response = requests.post('http://localhost:5000/query', headers=headers, json=payload)
+    annotation_response = requests.post('http://localhost:5001/query', headers=headers, json=payload)
     summarized_response = summarize_json_response(annotation_response)
 
     return jsonify(response=summarized_response)
