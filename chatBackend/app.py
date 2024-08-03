@@ -11,6 +11,8 @@ load_dotenv()
 
 # Get the OpenAI API key from environment variables
 # OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+local_model_path = os.getenv('LOCAL_MODEL_PATH')
+base_url = os.getnev('BASE_URL')
 
 
 

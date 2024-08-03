@@ -3,9 +3,12 @@ import outlines
 import json
 from huggingface_hub import login
 from transformers import AutoModelForCausalLM, AutoTokenizer
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-local_model_path = "/mnt/hdd_2/abdu/llama3/hf_weights"
+local_model_path = os.getenv('LOCAL_MODEL_PATH')
 
 def use_outlines(user_question):
     prompt = f'''

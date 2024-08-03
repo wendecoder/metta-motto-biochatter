@@ -1,5 +1,11 @@
 from llama import LlamaAgent
 from llama_index.llms.ollama import Ollama
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+base_url = os.getnev('BASE_URL')
 
 def generate_json_request(user_question):
     prompt = f'''
@@ -97,7 +103,7 @@ def generate_json_request(user_question):
     {user_question}
     '''
 
-    llm = Ollama(model="llama3", request_timeout=120.0, base_url="http://100.67.47.42:11434", json_mode=True)
+    llm = Ollama(model="llama3", request_timeout=120.0, base_url=base_url, json_mode=True)
     response = llm.complete(prompt)
     return response
 
