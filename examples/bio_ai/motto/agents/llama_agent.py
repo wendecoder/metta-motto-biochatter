@@ -11,4 +11,3 @@ class LlamaAgent:
     def __call__(self, prompt):
         response = self._client.complete(prompt)
         return response
-
